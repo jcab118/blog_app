@@ -24,11 +24,11 @@ body {font-family: "Open Sans"}
     <h3>The Blog and Adventures of Joel's World</h3>
     <h4>...is crazier than you think...</h4>
     <br>
-    <a href="blog.html">
-  <button class="button button-blue button-bordered">
-    <span class="button--inner">Lets Start Blogging!!!</span>
-  </button>
-</a>
+    <div class="text-center center-block">
+    <a href="/blog">
+      <button>blog</button>
+    </a>
+  </div>
   </header>
   <!-- Image header -->
     <div class="w3-display-left w3-padding-large"></div>
@@ -209,7 +209,6 @@ document.getElementById('myBtn').click();
         x.className = x.className.replace(" w3-show", "");
     }
 }
-
 function likeFunction(x) {
     x.style.fontWeight = "bold";
     x.innerHTML = "✓ Liked";

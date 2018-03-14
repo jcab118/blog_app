@@ -1,41 +1,111 @@
 $(document).ready(function(){
-  $('#blog-form').on('submit', function(e){
+  // var formDiv = $("<div id='form-div'>");
+  // formDiv.css({marginLeft: '25px'})
+  // var blogForm = $('<form>');
+  // var nameLabel = $('<label>',{
+  //   text: 'Name'
+  // });
+  // var nameInput = $('<input>',{
+  //   type: 'text',
+  //   width: 300,
+  //   id: 'name-input'
+  // });
+  // var postLabel = $('<label>',{
+  //   text: 'Post'
+  // });
+  // var blogTA = $('<textarea>',{
+  //   width: 300,
+  //   height: 150,
+  //   id: 'blog-input'
+  // });
+  // var submitInput = $('<input>',{
+  //   type: 'submit',
+  //   class: 'btn btn-primary',
+  //   value: 'Post'
+  // });
+  // blogForm.append(nameLabel).append("<br>").append(nameInput).append('<br>').append(postLabel).append("<br>").append(blogTA).append("<br>").append(submitInput);
+  //formDiv.append(blogForm);
+  //$('div').eq(1).append(formDiv);
+
+  $("#blog-form").on('submit', (e) => {
     e.preventDefault();
-    var blogTitle = $('title-text').val();
-    var blogPost = $('blog_post').val();
-    var blogObj = {blogTitle: blogTitle, blogPost: blogPost};
-    var newRow, blogTitleTr, blogPostTr;
+    var obj = {
+      name: $('#title-text').val(),
+      post: $('#blog_post').val()
+    }
     $.ajax({
       method: 'POST',
-      url:'/blog_post',
-      data: JSON.stringify(blogObj),
-      contentType:'application/json',
-      dataType:'json',
-      success:function(results) {
-        newRow = $('<tr>')
-        blogTitle = $("<tr>");
-        blogPost = $('<tr>');
-        newRow.append(blogTitleTr).append(blogPostTr);
-        $('#blog_object').append(newRow);
-        $('title-text').val("");
-        $('blog_post').val("");
-      }
-    });
+      url: '/api/post-blog',
+      data: JSON.stringify(obj),
+      contentType: 'application/json',
+      dataType: 'json'
+    }).then(function(res){
+      console.log(res)
+      var postsDiv = $('<div id="posts-div">');
+      var postDiv = $('<div id="post-div">')
+      var titleP, blogP
+      res.posts.forEach((r) => {
+        console.log(r)
+        titleP = $("<p>",{
+          text: r.name
+        });
+        blogP = $("<p>",{
+          text: r.post
+        });
+        postDiv.append(titleP).append(blogP);
+        postsDiv.append(postDiv);
+      });
+      $('#blog_object').append(postsDiv);
+      // $.ajax({
+      //   method: 'GET',
+      //   url: '/api/get-posts'
+      // }).then(function(results){
+      //   $('#noPostP').remove()
+      //   $('#posts-div').remove();
+      //   if(results.length > 0){
+      //     var postsDiv = $('<div id="posts-div">');
+      //     var postDiv, postName, postBlog;
+      //     for(var i = 0; i < results.length; i++){
+      //       postDiv = $('<div>');
+      //       postDiv.addClass('well');
+      //       postDiv.css({display: 'inline-block', marginLeft: '25px'})
+
+      //       postName = $('<p class="post-name">');
+      //       postName.text("Name: " + results[i].name);
+
+      //       postBlog = $("<p>");
+      //       postBlog.text("Post: " + results[i].post);
+
+      //       postDiv.append(postName).append("<br>").append(postBlog);
+      //       postsDiv.append(postDiv).append("<br>");
+      //     }
+      //     $('#posts').append(postsDiv);
+
+      //   } else {
+      //     var noPostP = $("<p>",{
+      //       text: 'No Posts',
+      //       id: 'noPostP'
+      //     });
+      //     $('#posts').append(noPostP);
+      //   }
+      // });
+    })
+    $('#name-input').val("");
+    $('#blog-input').val("")
   });
+
   $.ajax({
-    method:"GET",
-    url:'/blog_page',
-  }).then (function(res){
+    method: 'GET',
+    url: '/api/get-posts'
+  }).then(function(res){
     console.log(res)
-    var newRow, blogTitleTr, blogPostTr;
-    for(var i = 0; i < res.length; i++) {
-      newRow = $('<tr>')
-      blogTitleTd = $('<tr>');
-      blogPostTd = $('<tr>');
-      blogTitleTr.text(res[i].blogTitle);
-      blogPostTr.text(res[i].blogPost);
-      newRow.append(blogTitleTr).append(blogPostTr);
-      $('#blog_object').append(newRow)
+    if(res.length <= 0){
+      var noPostP = $("<p>",{
+        text: 'No Posts',
+        id: 'noPostP'
+      });
+      $('#posts').append(noPostP);
     }
   });
+
 });
